@@ -1,0 +1,6 @@
+__pycache__
+/images
+/ocr
+/ocr_truth
+/pdf_file
+env.py
