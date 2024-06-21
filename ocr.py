@@ -1,4 +1,5 @@
 import pytesseract
+from pytesseract import Output
 import os
 from PIL import Image
 import pandas as pd
@@ -8,10 +9,7 @@ from env import OCR_OUT, TESS_PATH, TESSDATA_PATH
 # TODO: Label text for a single pdf (ground truth)
 # TODO: traineddata files vs finetuning?
 
-os.environ["TESSDATA_PREFIX"] = (
-    TESS_PATH
-)
-TESS_PATH = TESSDATA_PATH
+os.environ["TESSDATA_PREFIX"] = TESSDATA_PATH
 pytesseract.pytesseract.tesseract_cmd = TESS_PATH
 
 
@@ -45,18 +43,18 @@ def ocr(img_path, save_dir=OCR_OUT, save_name="1"):
       3    Default, based on what is available.
     """
     img = Image.open(img_path)
-
+    h, w = img.height, img.width
     # psm 11 may be useful
-    custom_oem_psm_config = r"--oem 1 --psm 3 -l eng"
-    data = pytesseract.image_to_data(img, config=custom_oem_psm_config)
-    with open(f"{save_dir}/{save_name}.tsv", "w") as f:
-        f.write(data)
-
-    # we prefer csv
-    df = pd.read_csv(
-        f"{save_dir}/{save_name}.tsv", sep="\t", header=0, encoding="unicode_escape"
+    custom_oem_psm_config = r"--oem 1 --psm 3 -l eng -c tessedit_write_images=1"
+    data = pytesseract.image_to_data(
+        img, config=custom_oem_psm_config, output_type=Output.DATAFRAME
     )
-    df.to_csv(f"{save_dir}/{save_name}.csv")
+    data["image_height"] = h
+    data["image_width"] = w
+    data["image_path"] = img_path
+    data.to_csv(f"{save_dir}/{save_name}.tsv", encoding="utf-8", sep="\t")
+    data.to_csv(f"{save_dir}/{save_name}.csv", encoding="utf-8")
+
 
 if __name__ == "__main__":
-    ocr("./data/1.jpg")
+    ocr("./images/1.jpg")

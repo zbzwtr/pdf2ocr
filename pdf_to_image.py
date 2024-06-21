@@ -1,6 +1,7 @@
 from pdf2image import convert_from_path
 from env import POPPLER_PATH, IMAGES, IMG_EXT, IMG_WIDTH, IMG_HEIGHT
 
+
 def pdf_to_image(
     pdf_path,
     img_w=IMG_WIDTH,
