@@ -3,4 +3,6 @@ __pycache__
 /ocr
 /ocr_truth
 /pdf_file
+/fonts
+sandbox.*
 env.py
