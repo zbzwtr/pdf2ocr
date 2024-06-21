@@ -2,7 +2,7 @@
 
 ### Purpose
 
-* Simple pdf document to ocr pipeline.
+* Plug and play pdf document to ocr pipeline.
 
 
 ### How to Use
